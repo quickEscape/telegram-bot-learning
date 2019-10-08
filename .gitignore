@@ -1,2 +1,13 @@
-node_modules/
+# Dependency directory
+node_modules
+
+# node-waf configuration
+.lock-wscript
+
+# lock scripts
+package-lock.json
 yarn.lock
+
+# Optional REPL history
+.env
+.vscode
