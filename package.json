@@ -1,0 +1,28 @@
+{
+  "name": "telegram-bot-learning",
+  "version": "1.0.0",
+  "description": "trying write something useful",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quickEscape/telegram-bot-learning.git"
+  },
+  "keywords": [
+    "telegraf",
+    "telegrafjs",
+    "telegrambot",
+    "nodejs"
+  ],
+  "author": "Evgeniy Kononko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quickEscape/telegram-bot-learning/issues"
+  },
+  "homepage": "https://github.com/quickEscape/telegram-bot-learning#readme",
+  "dependencies": {
+    "telegraf": "^3.32.0"
+  }
+}
