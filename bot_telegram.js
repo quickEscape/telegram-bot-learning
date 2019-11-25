@@ -3,6 +3,7 @@ const path = require('path');
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const Markup = require('telegraf/markup');
+const { db } = require('./db');
 
 // Import required bot configuration.
 const ENV_FILE = path.join(__dirname, '.env');
@@ -13,23 +14,38 @@ const telegramBot = new Telegraf(process.env.BOT_TOKEN);
 // enable logging
 // telegramBot.use(Telegraf.log());
 
-telegramBot.start(ctx =>
-	ctx.reply(
-		`Привет, ${ctx.from.first_name}! Чем могу быть полезен?`,
+telegramBot.start(ctx => {
+	const connectButton = Markup.callbackButton('Connect Skype', 'CONNECT_SKYPE');
+	const disconnectButton = Markup.callbackButton(
+		'Disconnect Skype',
+		'DISCONNECT_SKYPE'
+	);
 
+	const telegramUserRef = db.doc(
+		`bot/telegram/users/${ctx.message.from.username}`
+	);
+
+	return ctx.reply(
+		`Привет, ${ctx.from.first_name}! Чем могу быть полезен?`,
 		// create keyboard
 		Markup.inlineKeyboard([
 			Markup.callbackButton('Connect Skype', 'CONNECT_SKYPE'),
 			Markup.callbackButton('Nothing...', 'NOTHING')
 		]).extra()
-	)
-);
+	);
+});
 
 telegramBot.action('CONNECT_SKYPE', ctx => {
-	return ctx.reply(`👍
-	First name: ${ctx.update.callback_query.from.first_name}
-	Username: ${ctx.update.callback_query.from.username}
-	ChatId: ${ctx.update.callback_query.from.id}`);
+	const telegramUserRef = db.doc(
+		`bot/telegram/users/${ctx.update.callback_query.from.username}`
+	);
+
+	telegramUserRef.set({
+		username: ctx.update.callback_query.from.username,
+		chat_id: ctx.update.callback_query.from.id
+	});
+
+	return ctx.reply(`You added to database 👍`);
 });
 
 telegramBot.action('NOTHING', ctx => {

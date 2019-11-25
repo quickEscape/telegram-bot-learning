@@ -1,8 +1,8 @@
 const dotenv = require('dotenv');
 const path = require('path');
-
 const { ActivityHandler } = require('botbuilder');
 const Telegram = require('telegraf/telegram');
+const { db } = require('./db');
 
 // Import required bot configuration.
 const ENV_FILE = path.join(__dirname, '.env');
