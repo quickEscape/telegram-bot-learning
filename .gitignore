@@ -8,6 +8,9 @@ node_modules
 package-lock.json
 yarn.lock
 
+# logs
+*.log
+
 # Optional REPL history
 .env
 .vscode
