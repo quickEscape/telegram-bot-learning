@@ -25,14 +25,16 @@ telegramBot.start(ctx => {
 		`bot/telegram/users/${ctx.message.from.username}`
 	);
 
-	return ctx.reply(
-		`Привет, ${ctx.from.first_name}! Чем могу быть полезен?`,
-		// create keyboard
-		Markup.inlineKeyboard([
-			Markup.callbackButton('Connect Skype', 'CONNECT_SKYPE'),
-			Markup.callbackButton('Nothing...', 'NOTHING')
-		]).extra()
-	);
+	telegramUserRef.get().then(user => {
+		return ctx.reply(
+			`Привет, ${ctx.from.first_name}! Чем могу быть полезен?`,
+			// create keyboard
+			Markup.inlineKeyboard([
+				user.exists ? disconnectButton : connectButton,
+				Markup.callbackButton('Nothing...', 'NOTHING')
+			]).extra()
+		);
+	});
 });
 
 telegramBot.action('CONNECT_SKYPE', ctx => {
@@ -40,12 +42,21 @@ telegramBot.action('CONNECT_SKYPE', ctx => {
 		`bot/telegram/users/${ctx.update.callback_query.from.username}`
 	);
 
-	telegramUserRef.set({
-		username: ctx.update.callback_query.from.username,
-		chat_id: ctx.update.callback_query.from.id
+	telegramUserRef.get().then(user => {
+		if (user.exists) return ctx.reply(`You already connected`);
+		telegramUserRef.set({
+			username: ctx.update.callback_query.from.username,
+			chat_id: ctx.update.callback_query.from.id
+		});
+		return ctx.reply(`You added to database 👍`);
 	});
+});
 
-	return ctx.reply(`You added to database 👍`);
+telegramBot.action('DISCONNECT_SKYPE', ctx => {
+	const telegramUserRef = db.doc(
+		`bot/telegram/users/${ctx.update.callback_query.from.username}`
+	);
+	return ctx.reply(`Disconnected (not really.. it's in development) 🤖`);
 });
 
 telegramBot.action('NOTHING', ctx => {
